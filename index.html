@@ -1,0 +1,59 @@
+<html>
+<head>
+<title>Quick Note</title>
+<script>
+function storeLocally(){
+	if(localStorage) {
+		localStorage.setItem('QuickNoteText', input.value);
+	} else {
+		alert('localStorage not available.');
+	}
+	if(chrome) {
+		if(chrome.storage) {
+			if(chrome.storage.local){
+				var data = {};
+				var key = "QuickNoteText";
+				data[key] += input.value;
+				chrome.storage.local.set(data);
+			}
+		}
+	}
+}
+function restoreLocally(){
+	if(localStorage){
+		if(localStorage.getItem('QuickNoteText')) {
+			input.value=localStorage.getItem('QuickNoteText');
+		}
+	} else {
+		alert('localStorage not available.');
+	}
+	if(chrome && chrome.storage && chrome.storage.local){
+		var data = "";
+		chrome.storage.local.get('QuickNoteText', function (result) {
+			data = result.QuickNoteText;
+			alert(data);
+			input.value = data;
+		});
+	}
+}
+</script>
+<style>
+#input {
+	font-family: Tahoma;
+	font-size: 1em;
+	letter-spacing: 2px;
+	line-height: 1.4;
+	margin:1 auto;
+	padding: 1em;
+	width: 100%;
+	height: 100%;
+	border: none;
+	outline: none;
+	resize: none;
+}
+</style>
+</head>
+<body onload="javascript:restoreLocally();">
+<textarea type="text" id="input" onkeyup="javascript:storeLocally();" placeholder="Start typing your notes here... Your notes are automatically saved." autofocus></textarea>
+</body>
+</html>
